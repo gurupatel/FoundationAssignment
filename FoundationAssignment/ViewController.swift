@@ -12,6 +12,8 @@ class ViewController: UIViewController {
     // MARK: - Properties
             
     private let reuseIdentifier = "ImageCell"
+    private let apiURL = URL(string: "https://acharyaprashant.org/api/v2/content/misc/media-coverages?limit=100")!
+    private var mediaCoverages: [MediaCoverage] = []
 
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -32,7 +34,22 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
+        fetchMediaCoverages()
     }
+    
+    private func fetchMediaCoverages() {
+            URLSession.shared.dataTask(with: apiURL) { data, response, error in
+                guard let data = data else {
+                    debugPrint("Failed to fetch media coverages:", error ?? "")
+                    return
+                }
+                do {
+
+                } catch {
+                    debugPrint("Error decoding media coverages:", error)
+                }
+            }.resume()
+        }
     
     // MARK: - Private Methods
     
