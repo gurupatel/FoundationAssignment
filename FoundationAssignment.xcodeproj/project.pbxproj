@@ -13,6 +13,7 @@
 		CAF184E82BCC07B900FE254D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CAF184E62BCC07B900FE254D /* Main.storyboard */; };
 		CAF184EA2BCC07BB00FE254D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CAF184E92BCC07BB00FE254D /* Assets.xcassets */; };
 		CAF184ED2BCC07BB00FE254D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CAF184EB2BCC07BB00FE254D /* LaunchScreen.storyboard */; };
+		CAF184F92BCC14F400FE254D /* MediaCoverage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAF184F82BCC14F400FE254D /* MediaCoverage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		CAF184E92BCC07BB00FE254D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CAF184EC2BCC07BB00FE254D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		CAF184EE2BCC07BB00FE254D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CAF184F82BCC14F400FE254D /* MediaCoverage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaCoverage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +58,7 @@
 		CAF184DF2BCC07B900FE254D /* FoundationAssignment */ = {
 			isa = PBXGroup;
 			children = (
+				CAF184F72BCC14EA00FE254D /* Model */,
 				CAF184E02BCC07B900FE254D /* AppDelegate.swift */,
 				CAF184E22BCC07B900FE254D /* SceneDelegate.swift */,
 				CAF184E42BCC07B900FE254D /* ViewController.swift */,
@@ -65,6 +68,14 @@
 				CAF184EE2BCC07BB00FE254D /* Info.plist */,
 			);
 			path = FoundationAssignment;
+			sourceTree = "<group>";
+		};
+		CAF184F72BCC14EA00FE254D /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				CAF184F82BCC14F400FE254D /* MediaCoverage.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -140,6 +151,7 @@
 			files = (
 				CAF184E52BCC07B900FE254D /* ViewController.swift in Sources */,
 				CAF184E12BCC07B900FE254D /* AppDelegate.swift in Sources */,
+				CAF184F92BCC14F400FE254D /* MediaCoverage.swift in Sources */,
 				CAF184E32BCC07B900FE254D /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
