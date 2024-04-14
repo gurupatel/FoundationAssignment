@@ -6,16 +6,21 @@
 //
 
 import UIKit
+import Network
 
 class ViewController: UIViewController {
     
     // MARK: - Properties
-            
+    
+    private var noInternetConnectMsg = "No internet connection. Please check your network settings and try again."
+    
+    private var monitor: NWPathMonitor?
+    
     private let reuseIdentifier = "ImageCell"
     private let apiURL = URL(string: "https://acharyaprashant.org/api/v2/content/misc/media-coverages?limit=100")!
     private var mediaCoverages: [MediaCoverage] = []
     private var imageCache: NSCache<NSString, UIImage> = NSCache()
-
+    
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.minimumLineSpacing = 10
@@ -28,17 +33,18 @@ class ViewController: UIViewController {
         collectionView.register(ImageCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         return collectionView
     }()
-
+    
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        startMonitoringNetwork()
         setupViews()
         fetchMediaCoverages()
     }
     
     // MARK: - Private Methods
-
+    
     private func setupViews() {
         view.addSubview(collectionView)
         NSLayoutConstraint.activate([
@@ -48,25 +54,56 @@ class ViewController: UIViewController {
             collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
-
-    private func fetchMediaCoverages() {
-            URLSession.shared.dataTask(with: apiURL) { data, response, error in
-                guard let data = data else {
-                    debugPrint("Failed to fetch media coverages:", error ?? "")
-                    return
+    
+    private func startMonitoringNetwork() {
+        monitor = NWPathMonitor()
+        monitor?.pathUpdateHandler = { [weak self] path in
+            if path.status == .satisfied {
+                debugPrint("Internet connection is available")
+            } else {
+                debugPrint("No internet connection")
+                DispatchQueue.main.async {
+                    self?.showAlert(message: self!.noInternetConnectMsg)
                 }
-                do {
-                    let json = try JSONDecoder().decode([MediaCoverage].self, from: data)
-                    self.mediaCoverages = json
-                    DispatchQueue.main.async {
-                        self.collectionView.reloadData()
-                    }
-                } catch {
-                    debugPrint("Error decoding media coverages:", error)
-                }
-            }.resume()
+            }
         }
-            
+        let queue = DispatchQueue(label: "NetworkMonitor")
+        monitor?.start(queue: queue)
+    }
+    
+    private func showAlert(message: String) {
+        let alert = UIAlertController(title: "Alert", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(alert, animated: true, completion: nil)
+    }
+    
+    private func fetchMediaCoverages() {
+        if monitor?.currentPath.status == .satisfied {
+            // Hit your API here
+            fetchData()
+        } else {
+            showAlert(message: self.noInternetConnectMsg)
+        }
+    }
+    
+    private func fetchData() {
+        URLSession.shared.dataTask(with: apiURL) { data, response, error in
+            guard let data = data else {
+                debugPrint("Failed to fetch media coverages:", error ?? "")
+                return
+            }
+            do {
+                let json = try JSONDecoder().decode([MediaCoverage].self, from: data)
+                self.mediaCoverages = json
+                DispatchQueue.main.async {
+                    self.collectionView.reloadData()
+                }
+            } catch {
+                debugPrint("Error decoding media coverages:", error)
+            }
+        }.resume()
+    }
+    
     private func loadImage(from url: URL, completion: @escaping (UIImage?) -> Void) {
         DispatchQueue.global().async {
             if let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
@@ -89,8 +126,8 @@ extension ViewController: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! ImageCell
         let mediaCoverage = mediaCoverages[indexPath.item]
         
-//        debugPrint("coverageURL : ", mediaCoverage.coverageURL ?? "" as Any)
-                
+        //        debugPrint("coverageURL : ", mediaCoverage.coverageURL ?? "" as Any)
+        
         // Load image from cache or fetch it asynchronously
         if let cachedImage = imageCache.object(forKey: mediaCoverage.coverageURL as? NSString ?? "") {
             cell.imageView.image = cachedImage
